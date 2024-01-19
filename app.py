@@ -9,11 +9,9 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.llms import OpenAI
 from langchain.callbacks import get_openai_callback
 
-# Load environment variables
 load_dotenv()
 
 def process_text(text):
-    # Split the text into chunks using Langchain's CharacterTextSplitter
     text_splitter = CharacterTextSplitter(
         separator="\n",
         chunk_size=1000,
@@ -21,8 +19,7 @@ def process_text(text):
         length_function=len
     )
     chunks = text_splitter.split_text(text)
-    
-    # Convert the chunks of text into embeddings to form a knowledge base
+
     embeddings = OpenAIEmbeddings()
     knowledgeBase = FAISS.from_texts(chunks, embeddings)
     
@@ -35,12 +32,10 @@ def main():
     
     if pdf is not None:
         pdf_reader = PdfReader(pdf)
-        # Text variable will store the pdf text
         text = ""
         for page in pdf_reader.pages:
             text += page.extract_text()
         
-        # Create the knowledge base object
         knowledgeBase = process_text(text)
         
         query = st.text_input('Ask a question to the PDF')
